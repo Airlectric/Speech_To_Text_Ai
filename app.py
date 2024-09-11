@@ -17,7 +17,7 @@ model = ChatGroq(
 )
 
 # Initialize Whisper model
-whisper_model = whisper.load_model("base")
+whisper_model = whisper.load_model("medium")
 
 def process_audio_file(audio_file):
     # Transcribe the uploaded audio file
