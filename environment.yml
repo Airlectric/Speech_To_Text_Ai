@@ -53,7 +53,7 @@ dependencies:
       - SpeechRecognition==3.10.4
       - SQLAlchemy==2.0.34
       - streamlit==1.38.0
-      - streamlit_mic_recorder==0.0.8
+      - streamlit-mic-recorder
       - sympy==1.13.2
       - tenacity==8.5.0
       - tiktoken==0.7.0
