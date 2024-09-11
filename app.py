@@ -16,8 +16,12 @@ model = ChatGroq(
     groq_api_key=groq_api_key,
 )
 
-# Initialize Whisper model
-whisper_model = whisper.load_model("small")
+# Initialize Whisper model (only executed once!)
+@st.cache(allow_output_mutation=True)
+def load_whisper_model():
+    return whisper.load_model("small")
+
+whisper_model = load_whisper_model()
 
 def process_audio_file(audio_file):
     # Transcribe the uploaded audio file
