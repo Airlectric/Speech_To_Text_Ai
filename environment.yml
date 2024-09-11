@@ -67,6 +67,7 @@ dependencies:
       - watchdog==4.0.2
       - yarl==1.11.1
       - whisper==1.1.10
+      - openai-whisper @ git+https://github.com/openai/whisper.git@279133e3107392276dc509148da1f41bfb532c7e
 
       # Additional packages
       - aiohappyeyeballs==2.4.0
