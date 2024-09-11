@@ -1,8 +1,12 @@
 import streamlit as st
 from streamlit_mic_recorder import mic_recorder
 import whisper
+from faster_whisper import WhisperModel
 import os
 from langchain_groq import ChatGroq
+
+# Set page configuration as the first Streamlit command
+st.set_page_config(page_title="Real-Time Speech to Text", layout="centered")
 
 # AI Model Initialization
 groq_api_key = st.secrets["general"]["GROQ_API_KEY"]
@@ -17,19 +21,20 @@ model = ChatGroq(
 )
 
 # Initialize Whisper model (only executed once!)
-@st.cache(allow_output_mutation=True)
+# Initialize Faster-Whisper model (only executed once!)
+@st.cache_resource(allow_output_mutation=True)
 def load_whisper_model():
-    return whisper.load_model("small")
+    # Load the Faster-Whisper model
+    return WhisperModel("small")  # You can also use "medium" or "large" for better accuracy
 
 whisper_model = load_whisper_model()
-
 def process_audio_file(audio_file):
     # Transcribe the uploaded audio file
     result = whisper_model.transcribe(audio_file, language="en")
     return result['text']
 
 def main():
-    st.set_page_config(page_title="Real-Time Speech to Text", layout="centered")
+    # st.set_page_config(page_title="Real-Time Speech to Text", layout="centered")
 
     st.markdown("<h1 style='text-align: center;'>Real-Time Speech to Text 🎙️</h1>", unsafe_allow_html=True)
 

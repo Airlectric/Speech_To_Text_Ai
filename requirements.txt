@@ -5,6 +5,7 @@ altair==5.4.1
 annotated-types==0.7.0
 anyio==4.4.0
 attrs==24.2.0
+av==12.3.0
 blinker==1.8.2
 cachetools==5.5.0
 certifi==2024.8.30
@@ -12,9 +13,13 @@ cffi==1.17.1
 charset-normalizer==3.3.2
 click==8.1.7
 colorama==0.4.6
+coloredlogs==15.0.1
+ctranslate2==4.4.0
 distro==1.9.0
+faster-whisper==1.0.3
 ffmpeg==1.4
 filelock==3.16.0
+flatbuffers==24.3.25
 frozenlist==1.4.1
 fsspec==2024.9.0
 gitdb==4.0.11
@@ -24,6 +29,8 @@ groq==0.11.0
 h11==0.14.0
 httpcore==1.0.5
 httpx==0.27.2
+huggingface-hub==0.24.6
+humanfriendly==10.0
 idna==3.8
 Jinja2==3.1.4
 jsonpatch==1.33
@@ -47,6 +54,7 @@ narwhals==1.7.0
 networkx==3.3
 numba==0.60.0
 numpy==1.26.4
+onnxruntime==1.19.2
 openai-whisper @ git+https://github.com/openai/whisper.git@279133e3107392276dc509148da1f41bfb532c7e
 orjson==3.10.7
 packaging==24.1
@@ -59,6 +67,7 @@ pydantic==2.9.1
 pydantic_core==2.23.3
 pydeck==0.9.1
 Pygments==2.18.0
+pyreadline3==3.4.3
 python-dateutil==2.9.0.post0
 pytz==2024.2
 PyYAML==6.0.2
@@ -77,6 +86,7 @@ streamlit_mic_recorder==0.0.8
 sympy==1.13.2
 tenacity==8.5.0
 tiktoken==0.7.0
+tokenizers==0.20.0
 toml==0.10.2
 torch==2.4.1
 tornado==6.4.1
