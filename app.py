@@ -3,6 +3,8 @@ from streamlit_mic_recorder import mic_recorder
 from faster_whisper import WhisperModel
 import os
 from langchain_groq import ChatGroq
+from pydub import AudioSegment
+import concurrent.futures
 
 st.set_page_config(page_title="Real-Time Speech to Text", layout="centered")
 
@@ -21,16 +23,51 @@ model = ChatGroq(
 # Initialize Faster-Whisper model (only executed once!)
 @st.cache_resource()
 def load_whisper_model():
-    # Load the Faster-Whisper model
     return WhisperModel("small")  # You can also use "medium" or "large" for better accuracy
 
 whisper_model = load_whisper_model()
 
+def split_audio_file(audio_file, segment_length_ms=60000):
+    """Split audio file into segments of specified length."""
+    audio = AudioSegment.from_file(audio_file)
+    segments = []
+    for i in range(0, len(audio), segment_length_ms):
+        segment = audio[i:i + segment_length_ms]
+        segment_file = f"segment_{i // segment_length_ms}.wav"
+        segment.export(segment_file, format="wav")
+        segments.append(segment_file)
+    return segments
+
+def transcribe_segment(segment):
+    segment_transcription = whisper_model.transcribe(segment, language="en")
+    transcription_text = " ".join([s.text for s in segment_transcription[0]])
+    os.remove(segment)  # Automatically delete the segment file after transcription
+    return transcription_text
+
 def process_audio_file(audio_file):
-    # Transcribe the uploaded audio file using Faster-Whisper
-    segments, _ = whisper_model.transcribe(audio_file, language="en")
-    transcription = " ".join([segment.text for segment in segments])
-    return transcription
+    # Split the audio file into segments
+    segments = split_audio_file(audio_file)
+    full_transcription = []
+    total_segments = len(segments)
+
+    # Create a progress bar
+    progress_bar = st.progress(0)
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = {executor.submit(transcribe_segment, segment): segment for segment in segments}
+
+        for i, future in enumerate(concurrent.futures.as_completed(futures)):
+            transcription_text = future.result()
+            full_transcription.append(transcription_text)
+
+            # Update progress bar
+            progress_percentage = (i + 1) / total_segments
+            progress_bar.progress(progress_percentage)
+
+    # Automatically delete the original audio file after processing
+    os.remove(audio_file)
+
+    return " ".join(full_transcription)
 
 def main():
     st.markdown("<h1 style='text-align: center;'>Real-Time Speech to Text 🎙️</h1>", unsafe_allow_html=True)
@@ -84,9 +121,6 @@ def main():
                     st.markdown(f"<p style='font-size:18px;'>{corrected_text}</p>", unsafe_allow_html=True)
                     st.code(corrected_text, language='')  # Text area for copying
 
-            # Automatically delete the audio file after transcription
-            os.remove(audio_file)
-
     # Tab for uploading audio
     with tab2:
         st.write("Upload your audio file (WAV or supported format):")
@@ -126,9 +160,6 @@ def main():
                 with st.expander("📝 Corrected Transcription", expanded=True):
                     st.markdown(f"<p style='font-size:18px;'>{corrected_text}</p>", unsafe_allow_html=True)
                     st.code(corrected_text, language='')  # Text area for copying
-
-            # Automatically delete the uploaded audio file after transcription
-            os.remove("uploaded_audio")
 
     # Add some styling and animations
     st.markdown("""

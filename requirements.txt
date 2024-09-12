@@ -66,6 +66,7 @@ pycparser==2.22
 pydantic==2.9.1
 pydantic_core==2.23.3
 pydeck==0.9.1
+pydub==0.25.1
 Pygments==2.18.0
 pyreadline3==3.4.3
 python-dateutil==2.9.0.post0
